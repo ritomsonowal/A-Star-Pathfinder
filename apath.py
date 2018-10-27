@@ -1,7 +1,7 @@
 # A * Pathfinder Algorithm
 
 class Node():
-    def __init__(self, x, y, parent = None):
+    def __init__(self, x = 0, y = 0, parent = None):
         self.x = x
         self.y = y
 
@@ -12,12 +12,15 @@ class Node():
         self.h = 0
         self.f = 0
 
+    def __eq__(self, other):
+        return (self.x == other.x and self.y == other.y)
+
 # Algorithm
 def pathfinder(matrix, start, end):                 # s,e -> tuple containing coordinates
 
     # Set start node and end node
-    startnode = Node(start[0], start[1])
-    endnode = Node(end[0], end[1])
+    startnode = Node(start[0], start[1], None)
+    endnode = Node(end[0], end[1], None)
 
     # Initialize open and closed list
     open_list = []
@@ -58,7 +61,7 @@ def pathfinder(matrix, start, end):                 # s,e -> tuple containing co
             new_y = current_node.y + node[1]
 
             # Check range
-            if new_x > (len(matrix) - 1) or new_x < 0 or new_y > (len(matrix[0]) - 1) or new_y < 0:
+            if new_x > (len(matrix) - 1) or new_x < 0 or new_y > (len(matrix[len(matrix)-1]) - 1) or new_y < 0:
                 continue
 
             # Not a wall
@@ -90,21 +93,38 @@ def pathfinder(matrix, start, end):                 # s,e -> tuple containing co
             # Add the child to the open list
             open_list.append(child)
 
+# print matrix
+def print_mat(matrix):
+    for i in matrix:
+        for j in i:
+            print("%5s" % (j) , end="")
+        print()
 
-# DRIVER FUNCTION
+# MAIN
 
-maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+maze = [[0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]]
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 'X', 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 start = (0, 0)
 end = (7, 6)
 
+maze[start[0]][start[1]] = 'START'
+maze[end[0]][end[1]] = 'END'
+
+print_mat(maze)
+
 path = pathfinder(maze, start, end)
-print(path)
+print(" ")
+
+for i in path:
+    maze[i[0]][i[1]] = 1
+
+print_mat(maze)
